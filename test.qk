@@ -1,0 +1,13 @@
+/* hello
+ */
+i = 0;
+1str = "Hello im a\n string";
+mystr = """Hello I am Quack\n""";
+while(i >= j) {
+	j = j + 1;
+	i = i + 3;
+}
+
+badstr = "hi im a \q  string";
+badstr2 = "hi i have a bad
+newline";
