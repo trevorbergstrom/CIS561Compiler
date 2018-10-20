@@ -2,26 +2,43 @@
 // Created by Michal Young on 9/12/18.
 //
 
-#ifndef ASTNODE_H
-#define ASTNODE_H
+#ifndef REFLEXIVE_ASTNODE_H
+#define REFLEXIVE_ASTNODE_H
 
 #include <string>
 #include <sstream>
 #include <vector>
+#include "CodegenContext.h"
+#include "EvalContext.h"
 
 namespace AST {
     // Abstract syntax tree.  ASTNode is abstract base class for all other nodes.
-    // This is not the final AST for Quack ... it's a quick-and-dirty version
-    // that I copied over from the calculator example, and it isn't even the
-    // final version from the calculator example.
+
+    // Json conversion and pretty-printing can pass around a print context object
+    // to keep track of indentation, and possibly other things.
+    class AST_print_context {
+    public:
+        int indent_; // Number of spaces to place on left, after each newline
+        AST_print_context() : indent_{0} {};
+        void indent() { ++indent_; }
+        void dedent() { --indent_; }
+    };
 
     class ASTNode {
     public:
-        virtual std::string str() = 0;
-    };
-
-    class EvalContext {
-        /* To be filled in later */
+        virtual int eval(EvalContext &ctx) = 0;        // Immediate evaluation
+        virtual void json(std::ostream& out, AST_print_context& ctx) = 0;  // Json string representation
+        std::string str() {
+            std::stringstream ss;
+            AST_print_context ctx;
+            json(ss, ctx);
+            return ss.str();
+        }
+    protected:
+        void json_indent(std::ostream& out, AST_print_context& ctx);
+        void json_head(std::string node_kind, std::ostream& out, AST_print_context& ctx);
+        void json_close(std::ostream& out, AST_print_context& ctx);
+        void json_child(std::string field, ASTNode& child, std::ostream& out, AST_print_context& ctx, char sep=',');
     };
 
     /* A block is a sequence of statements or expressions.
@@ -33,20 +50,15 @@ namespace AST {
     public:
         explicit Block() : stmts_{std::vector<ASTNode*>()} {}
         void append(ASTNode* stmt) { stmts_.push_back(stmt); }
-         std::string str() override {
-            std::stringstream ss;
-            for (ASTNode *stmt: stmts_) {
-                ss << stmt->str() << ";" << std::endl;
-            }
-            return ss.str();
-        }
-    };
+        int eval(EvalContext& ctx) override;
+        void json(std::ostream& out, AST_print_context& ctx) override;
+     };
 
     /* L_Expr nodes are AST nodes that can be evaluated for location.
-     * Most can also be evaluated for value.  An example of an L_Expr
-     * is an identifier, which can appear on the left hand or right hand
+     * Most can also be evaluated for value_.  An example of an L_Expr
+     * is an identifier, which can appear on the left_ hand or right_ hand
      * side of an assignment.  For example, in x = y, x is evaluated for
-     * location and y is evaluated for value.
+     * location and y is evaluated for value_.
      *
      * For now, a location is just a name, because that's what we index
      * the symbol table with.  In a full compiler, locations can be
@@ -73,13 +85,8 @@ namespace AST {
     public:
         Assign(LExpr &lexpr, ASTNode &rexpr) :
            lexpr_{lexpr}, rexpr_{rexpr} {}
-        std::string str() override {
-            std::stringstream ss;
-            ss << lexpr_.str() << " = "
-               << rexpr_.str() << ";";
-            return ss.str();
-        }
-
+        void json(std::ostream& out, AST_print_context& ctx) override;
+        int eval(EvalContext& ctx) override;
     };
 
     class If : public ASTNode {
@@ -89,13 +96,8 @@ namespace AST {
     public:
         explicit If(ASTNode &cond, Block &truepart, Block &falsepart) :
             cond_{cond}, truepart_{truepart}, falsepart_{falsepart} { };
-        std::string str() override {
-            return "if " + cond_.str() + " {\n" +
-                truepart_.str() + "\n" +
-                "} else {\n" +
-                falsepart_.str() + "\n" +
-                "}\n";
-        }
+        void json(std::ostream& out, AST_print_context& ctx) override;
+        int eval(EvalContext& ctx) override;
 
     };
 
@@ -109,7 +111,8 @@ namespace AST {
         std::string text_;
     public:
         explicit Ident(std::string txt) : text_{txt} {}
-        std::string str() override { return text_; }
+        void json(std::ostream& out, AST_print_context& ctx) override;
+        int eval(EvalContext &ctx) override;
         std::string l_eval(EvalContext& ctx) override { return text_; }
     };
 
@@ -117,54 +120,53 @@ namespace AST {
         int value_;
     public:
         explicit IntConst(int v) : value_{v} {}
-        std::string str() override { return std::to_string(value_); }
+        void json(std::ostream& out, AST_print_context& ctx) override;
+        int eval(EvalContext &ctx) override { return value_; }
     };
 
     // Virtual base class for +, -, *, /, etc
     class BinOp : public ASTNode {
-    public:
         // each subclass must override the inherited
         // eval() method
 
     protected:
+        std::string opsym;
         ASTNode &left_;
         ASTNode &right_;
-        std::string opsym;
         BinOp(std::string sym, ASTNode &l, ASTNode &r) :
                 opsym{sym}, left_{l}, right_{r} {};
     public:
-        std::string str() {
-            std::stringstream ss;
-            ss << "(" << left_.str() << " " << opsym << " "
-               << right_.str() << ")";
-            return ss.str();
-        }
+        void json(std::ostream& out, AST_print_context& ctx) override;
     };
 
     class Plus : public BinOp {
     public:
+        int eval(EvalContext& ctx) override;
         Plus(ASTNode &l, ASTNode &r) :
-                BinOp(std::string("+"),  l, r) {};
+                BinOp(std::string("Plus"),  l, r) {};
     };
 
     class Minus : public BinOp {
     public:
+        int eval(EvalContext& ctx) override;
         Minus(ASTNode &l, ASTNode &r) :
-            BinOp(std::string("-"),  l, r) {};
+            BinOp(std::string("Minus"),  l, r) {};
     };
 
     class Times : public BinOp {
     public:
+        int eval(EvalContext& ctx) override;
         Times(ASTNode &l, ASTNode &r) :
-                BinOp(std::string("*"),  l, r) {};
+                BinOp(std::string("Times"),  l, r) {};
     };
 
     class Div : public BinOp {
     public:
+        int eval(EvalContext& ctx) override;
         Div (ASTNode &l, ASTNode &r) :
-                BinOp(std::string("/"),  l, r) {};
+                BinOp(std::string("Div"),  l, r) {};
     };
 
 
 }
-#endif //ASTNODE_H
+#endif //REFLEXIVE_ASTNODE_H

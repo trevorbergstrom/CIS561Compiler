@@ -14,7 +14,6 @@ const int  error_limit = 5;           // Should be configurable
 void bail()
 {
     std::cerr << "Too many errors, bailing" << std::endl;;
-    exit(99);
 }
 
 /* An error that we can locate in the input */

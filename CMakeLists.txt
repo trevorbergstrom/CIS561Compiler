@@ -10,6 +10,7 @@ cmake_minimum_required(VERSION 3.12)
 #
 set(REFLEX_LIB "/usr/local/lib/libreflex.a")
 set(REFLEX_INCLUDE "/usr/local/include/reflex")
+set(REFLEX reflex)
 
 # Recipes for generating C++ source files from .lxx and .yxx files
 #

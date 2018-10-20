@@ -1,0 +1,248 @@
+/* Parser for the quack language */
+
+%skeleton "lalr1.cc"
+%require "3.0"
+
+%code requires{
+	namespace yy{
+		class Lexer;
+	}
+	#include "ASTNode.h"
+}
+
+%locations
+%define parse.trace
+
+%parse-param { yy::Lexer& lexer }
+%parse-param { AST::ASTNode** root } 
+
+%code{
+	#include "lex.yy.h"
+	#undef yylex
+	#define yylex lexer.yylex
+	void dump(AST::ASTNode* n);
+}
+
+%union {
+	int 	num;
+	char* 	str;
+}
+
+%token <str> IDENT
+%token <str> STR_LIT
+%token <num> INT_LIT
+
+%type <cl>	class
+%type <cls>	classes
+%type <clssig>	class_signature
+%type <clsbdy>	class_body
+
+%type <mthds>	methods
+%type <mthd>	method
+
+%type <farg>	formal_arg
+%type <fargs>	formal_args
+
+%type <stmnt>	statement
+%type <stmnts>	statements
+%type <stmnt>	else elif elifs
+%type <stmtblk>	statement_block
+
+%type <rrexp>	ret_r_exp
+%type <rexp>	r_expr
+%type <lexp>	l_expr
+
+%type <typ_cs>	typecase
+%type <typ_alt>	type_alt
+
+%token CLASS DEF EXTENDS RETURN TYPECASE
+
+%token IF ELIF ELSE WHILE
+
+%left AND OR NOT EQUALS ATMOST ATLEAST
+
+%left '<' '>'
+%left '+' '-'
+%left '/' '*'
+%left '.'
+
+
+%%
+program:
+	classes statements {
+};
+
+classes:
+	%empty {
+	}
+	| classes class {
+	};
+
+statements:
+	%empty {
+	}
+	| statements statement {
+	};
+
+class:
+	 class_signature class_body {
+	};
+
+class_signature:
+	CLASS IDENT '(' formal_args ')' EXTENDS IDENT {
+	}
+	| CLASS IDENT '(' formal_args ')' {
+	};
+
+class_body:
+	'{' statements methods '}' {
+	};
+
+methods:
+	%empty {
+	}
+	| methods method {
+	};
+
+method:
+	DEF IDENT '(' formal_args ')' ':'IDENT statements {
+	};
+
+formal_args:
+	%empty {
+	}
+	| formal_args ',' formal_arg {
+	}
+	| formal_arg {
+	};
+
+formal_arg:
+	IDENT ':'IDENT {
+	};
+
+statement:
+	IF r_expr statement_block
+	elifs
+	else {
+	};
+elifs:
+	%empty {
+	}
+	| elifs elif {
+	};
+elif:
+	ELIF r_expr statement_block {
+	};
+else:
+	%empty {
+	}
+	| ELSE statement_block {
+	};
+
+statement_block:
+	'{' statements '}' {
+	};
+
+statement:
+	WHILE r_expr statement_block {
+	};
+
+statement:
+	l_expr ':' IDENT '=' r_expr ';' {
+	}
+	| l_expr '=' r_expr ';' {
+	}
+	| r_expr ';' {
+	};
+
+statement:
+	RETURN ret_r_exp ';'{
+	};
+
+statement:
+	typecase {
+	};
+
+typecase:
+	TYPECASE r_expr '{' type_alt '}' {
+	}
+
+type_alt:
+	IDENT ':' IDENT statements {
+	};
+
+ret_r_exp:
+	%empty {
+	}
+	| r_expr {
+	};
+
+l_expr:
+	IDENT {
+	};
+	| r_expr '.' IDENT {
+	};
+
+r_expr:
+	STR_LIT {
+	}
+	| INT_LIT {
+	}
+	| l_expr {
+	}
+	| r_expr '+' r_expr {
+	}
+	| r_expr '-' r_expr {
+	}
+	| r_expr '*' r_expr {
+	}
+	| r_expr '/' r_expr {
+	}
+	| '-' r_expr {
+	}
+	| '(' r_expr ')' {
+	};
+
+r_expr:
+	r_expr EQUALS r_expr {
+	}
+	| r_expr ATMOST r_expr {
+	}
+	| r_expr ATLEAST r_expr {
+	}
+	| r_expr '<' r_expr {
+	}
+	| r_expr '>' r_expr {
+	}
+	| r_expr AND r_expr {
+	}
+	| r_expr OR r_expr {
+	} 
+	| r_expr NOT r_expr {
+	};
+
+r_expr:
+	r_expr '.' IDENT '(' actual_args ')' {
+	}
+	| IDENT '(' actual_args ')'{
+	};
+
+actual_args:
+	%empty {
+	}
+	| actual_args ',' r_expr {
+	}
+	| r_expr {
+	};
+
+%%
+#include "Messages.h"
+
+void yy::parser::error(const location_type& loc, const std::string& msg)
+{
+  report::error_at(loc, msg);
+}
+
+void dump(AST::ASTNode* n) {
+    // std::cout << "*** Building: " << n->str() << std::endl;
+}

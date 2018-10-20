@@ -126,7 +126,7 @@ not	{return parser::token::NOT;}
    * and unclosed quotes.
    */ 
 
-[a-zA-Z_]*	{return parser::token::IDENT;}
+[_a-zA-Z][_a-zA-Z0-9]*	{return parser::token::IDENT;}
   /* Ignore whitespace */
 [ \t\n]*  { ; }
 
@@ -138,9 +138,9 @@ not	{return parser::token::NOT;}
 <comment>[*][/]  { start(INITIAL); }
 
 ["]["]["]	{start(string);}
-<string>["]["]["] {start(INITIAL); return parser::token::STRING_LIT;}
+<string>["]["]["] {start(INITIAL); return parser::token::STR_LIT;}
 <string>.	{mystring += text();}
-\"(([\\][n0trf"\\])|[^"\n\\])*\" { return parser::token::STRING_LIT; }
+\"(([\\][n0trf"\\])|[^"\n\\])*\" { return parser::token::STR_LIT; }
 \"(([\\].)|[^\n\\])*\"     {report::error(BAD_ESC_MSG);;}
 \"(([\\].)|[^"])*\n         {report::error(BAD_NL_STR);}
 
