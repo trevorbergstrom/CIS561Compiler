@@ -490,7 +490,7 @@ namespace yy {
     {
       yyeof_ = 0,
       yylast_ = 238,     ///< Last index in yytable_.
-      yynnts_ = 22,  ///< Number of nonterminal symbols.
+      yynnts_ = 23,  ///< Number of nonterminal symbols.
       yyfinal_ = 3, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,

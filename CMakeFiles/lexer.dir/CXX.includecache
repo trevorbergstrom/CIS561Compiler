@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/Users/trevorbergstrom/NewCompiler/ASTNode.cpp
+ASTNode.h
+/Users/trevorbergstrom/NewCompiler/ASTNode.h
+
 /Users/trevorbergstrom/NewCompiler/ASTNode.h
 string
 -

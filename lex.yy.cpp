@@ -147,7 +147,7 @@ std::string BAD_NL_STR =
 
 int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
 {
-  static const reflex::Pattern PATTERN_INITIAL("(?m)([=][=])|([<][=])|([>][=])|([*+\\x2d/])|([\\x28])|([\\x29])|([;])|([\\x7b])|([\\x7d])|([=])|([\\x2e])|([:])|([>])|([<])|([,])|(class)|(def)|(if)|(elif)|(else)|(while)|(return)|(and)|(or)|(not)|([0-9]+)|([A-Z_a-z][0-9A-Z_a-z]*)|([\\x09\\x0a\\x20]*)|([/][\\x2a])|([\"][\"][\"])|(\"(?:(?:[\\x5c][\"0\\x5cfnrt])|[^\\x0a\"\\x5c])*\")|(\"(?:(?:[\\x5c].)|[^\\x0a\\x5c])*\")|(\"(?:(?:[\\x5c].)|[^\"])*\\n)|(.)");
+  static const reflex::Pattern PATTERN_INITIAL("(?m)([=][=])|([<][=])|([>][=])|([\\x2d])|([\\x2b])|([\\x2a])|([/])|([\\x28])|([\\x29])|([;])|([\\x7b])|([\\x7d])|([=])|([\\x2e])|([:])|([>])|([<])|([,])|(class)|(def)|(if)|(elif)|(else)|(while)|(return)|(and)|(or)|(not)|(extends)|([0-9]*)|([A-Z_a-z][0-9A-Z_a-z]*)|([\\x09\\x0a\\x20]*)|([/][\\x2a])|([\"][\"][\"])|(\"(?:(?:[\\x5c][\"0\\x5cfnrt])|[^\\x0a\"\\x5c])*\")|(\"(?:(?:[\\x5c].)|[^\\x0a\\x5c])*\")|(\"(?:(?:[\\x5c].)|[^\"])*\\n)|(.)");
   static const reflex::Pattern PATTERN_comment("(?m)([^\\x2a]*)|([\\x2a][^/])|([\\x2a][/])");
   static const reflex::Pattern PATTERN_string("(?m)([\"][\"][\"])|(.)");
   if (!has_matcher())
@@ -176,7 +176,7 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
           case 0:
             if (matcher().at_end())
             {
-#line 152 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+#line 155 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { return EOF; }
 
             }
@@ -204,52 +204,64 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
     * Here are a few ... there are more.
     */
             break;
-          case 4: // rule at line 73: [*+\x2d/]
+          case 4: // rule at line 73: [\x2d]
 #line 73 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
-{ return text()[0]; }
+{return '-';}
             break;
-          case 5: // rule at line 74: [\x28]
+          case 5: // rule at line 74: [\x2b]
 #line 74 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+{return '+';}
+            break;
+          case 6: // rule at line 75: [\x2a]
+#line 75 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+{return '*';}
+            break;
+          case 7: // rule at line 76: [/]
+#line 76 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+{return '/';}
+            break;
+          case 8: // rule at line 77: [\x28]
+#line 77 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return '(';}
             break;
-          case 6: // rule at line 75: [\x29]
-#line 75 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 9: // rule at line 78: [\x29]
+#line 78 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return ')';}
             break;
-          case 7: // rule at line 76: [;]
-#line 76 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 10: // rule at line 79: [;]
+#line 79 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return ';';}
             break;
-          case 8: // rule at line 77: [\x7b]
-#line 77 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 11: // rule at line 80: [\x7b]
+#line 80 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return '{';}
             break;
-          case 9: // rule at line 78: [\x7d]
-#line 78 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 12: // rule at line 81: [\x7d]
+#line 81 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return '}';}
             break;
-          case 10: // rule at line 79: [=]
-#line 79 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 13: // rule at line 82: [=]
+#line 82 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return '=';}
             break;
-          case 11: // rule at line 80: [\x2e]
-#line 80 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 14: // rule at line 83: [\x2e]
+#line 83 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return '.';}
             break;
-          case 12: // rule at line 81: [:]
-#line 81 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
-{return '.';}
+          case 15: // rule at line 84: [:]
+#line 84 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+{return ':';}
             break;
-          case 13: // rule at line 82: [>]
-#line 82 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 16: // rule at line 85: [>]
+#line 85 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return '>';}
             break;
-          case 14: // rule at line 83: [<]
-#line 83 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 17: // rule at line 86: [<]
+#line 86 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return '<';}
             break;
-          case 15: // rule at line 84: [,]
-#line 84 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 18: // rule at line 87: [,]
+#line 87 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return ',';}
   /* Keywords are essentially another kind of punctuation,
    * but since they also match the identifier pattern, we
@@ -261,46 +273,49 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
    */
 
             break;
-          case 16: // rule at line 94: class
-#line 94 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 19: // rule at line 97: class
+#line 97 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { return parser::token::CLASS; }
             break;
-          case 17: // rule at line 95: def
-#line 95 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 20: // rule at line 98: def
+#line 98 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { return parser::token::DEF; }
             break;
-          case 18: // rule at line 96: if
-#line 96 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 21: // rule at line 99: if
+#line 99 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::IF;}
             break;
-          case 19: // rule at line 97: elif
-#line 97 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 22: // rule at line 100: elif
+#line 100 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::ELIF;}
             break;
-          case 20: // rule at line 98: else
-#line 98 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 23: // rule at line 101: else
+#line 101 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::ELSE;}
             break;
-          case 21: // rule at line 99: while
-#line 99 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 24: // rule at line 102: while
+#line 102 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::WHILE;}
             break;
-          case 22: // rule at line 100: return
-#line 100 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 25: // rule at line 103: return
+#line 103 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::RETURN;}
             break;
-          case 23: // rule at line 101: and
-#line 101 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 26: // rule at line 104: and
+#line 104 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::AND;}
             break;
-          case 24: // rule at line 102: or
-#line 102 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 27: // rule at line 105: or
+#line 105 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::OR;}
             break;
-          case 25: // rule at line 103: not
-#line 103 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 28: // rule at line 106: not
+#line 106 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::NOT;}
-
+            break;
+          case 29: // rule at line 107: extends
+#line 107 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+{return parser::token::EXTENDS;}
 
 
    /* The following tokens are value-bearing:
@@ -316,8 +331,8 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
     */
 
             break;
-          case 26: // rule at line 119: [0-9]+
-#line 119 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 30: // rule at line 122: [0-9]*
+#line 122 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { yylval.num = atoi(text()); return parser::token::INT_LIT; }
 
   /* You *can* write a one-line regular expression for matching a quoted string,
@@ -329,40 +344,40 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
    */
 
             break;
-          case 27: // rule at line 129: [A-Z_a-z][0-9A-Z_a-z]*
-#line 129 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 31: // rule at line 132: [A-Z_a-z][0-9A-Z_a-z]*
+#line 132 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {return parser::token::IDENT;}
   /* Ignore whitespace */
             break;
-          case 28: // rule at line 131: [\x09\x0a\x20]*
-#line 131 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 32: // rule at line 134: [\x09\x0a\x20]*
+#line 134 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { ; }
 
    /* Multi-line comments */
             break;
-          case 29: // rule at line 134: [/][\x2a]
-#line 134 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 33: // rule at line 137: [/][\x2a]
+#line 137 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { start(comment); }
             break;
-          case 30: // rule at line 140: ["]["]["]
-#line 140 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 34: // rule at line 143: ["]["]["]
+#line 143 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {start(string);}
             break;
-          case 31: // rule at line 143: "(?:(?:[\x5c]["0\x5cfnrt])|[^\x0a"\x5c])*"
-#line 143 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 35: // rule at line 146: "(?:(?:[\x5c]["0\x5cfnrt])|[^\x0a"\x5c])*"
+#line 146 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { return parser::token::STR_LIT; }
             break;
-          case 32: // rule at line 144: "(?:(?:[\x5c].)|[^\x0a\x5c])*"
-#line 144 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 36: // rule at line 147: "(?:(?:[\x5c].)|[^\x0a\x5c])*"
+#line 147 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {report::error(BAD_ESC_MSG);;}
             break;
-          case 33: // rule at line 145: "(?:(?:[\x5c].)|[^"])*\n
-#line 145 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 37: // rule at line 148: "(?:(?:[\x5c].)|[^"])*\n
+#line 148 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {report::error(BAD_NL_STR);}
 
             break;
-          case 34: // rule at line 147: .
-#line 147 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 38: // rule at line 150: .
+#line 150 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {   report::error("Unexpected character '" + std::string(text()) + "'" +
        " at line " + std::to_string(lineno()) +
        ", column " + std::to_string(columno()));
@@ -378,7 +393,7 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
           case 0:
             if (matcher().at_end())
             {
-#line 135 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+#line 138 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {report::error("END OF FILE ENCOUNTERED IN COMMENT");start(INITIAL);}
             }
             else
@@ -386,16 +401,16 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
               out().put(matcher().input());
             }
             break;
-          case 1: // rule at line 136: [^\x2a]*
-#line 136 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 1: // rule at line 139: [^\x2a]*
+#line 139 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { ; }
             break;
-          case 2: // rule at line 137: [\x2a][^/]
-#line 137 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 2: // rule at line 140: [\x2a][^/]
+#line 140 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { ; }
             break;
-          case 3: // rule at line 138: [\x2a][/]
-#line 138 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 3: // rule at line 141: [\x2a][/]
+#line 141 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { start(INITIAL); }
 
             break;
@@ -408,7 +423,7 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
           case 0:
             if (matcher().at_end())
             {
-#line 152 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+#line 155 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 { return EOF; }
 
             }
@@ -417,12 +432,12 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
               out().put(matcher().input());
             }
             break;
-          case 1: // rule at line 141: ["]["]["]
-#line 141 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 1: // rule at line 144: ["]["]["]
+#line 144 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {start(INITIAL); return parser::token::STR_LIT;}
             break;
-          case 2: // rule at line 142: .
-#line 142 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+          case 2: // rule at line 145: .
+#line 145 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 {mystring += text();}
             break;
         }
@@ -439,7 +454,7 @@ int yy::Lexer::yylex(yy::parser::semantic_type& yylval)
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#line 155 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
+#line 158 "/Users/trevorbergstrom/NewCompiler/quack.lxx"
 
 /* No main program here */
 

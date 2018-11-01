@@ -3,6 +3,8 @@
 
 CMakeFiles/lexer.dir/ASTNode.cpp.o: ASTNode.cpp
 CMakeFiles/lexer.dir/ASTNode.cpp.o: ASTNode.h
+CMakeFiles/lexer.dir/ASTNode.cpp.o: CodegenContext.h
+CMakeFiles/lexer.dir/ASTNode.cpp.o: EvalContext.h
 
 CMakeFiles/lexer.dir/Messages.cpp.o: Messages.cpp
 CMakeFiles/lexer.dir/Messages.cpp.o: Messages.h

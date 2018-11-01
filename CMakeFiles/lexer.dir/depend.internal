@@ -4,6 +4,8 @@
 CMakeFiles/lexer.dir/ASTNode.cpp.o
  /Users/trevorbergstrom/NewCompiler/ASTNode.cpp
  /Users/trevorbergstrom/NewCompiler/ASTNode.h
+ /Users/trevorbergstrom/NewCompiler/CodegenContext.h
+ /Users/trevorbergstrom/NewCompiler/EvalContext.h
 CMakeFiles/lexer.dir/Messages.cpp.o
  /Users/trevorbergstrom/NewCompiler/Messages.cpp
  /Users/trevorbergstrom/NewCompiler/Messages.h

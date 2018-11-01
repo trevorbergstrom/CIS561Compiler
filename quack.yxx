@@ -32,6 +32,8 @@
 %token <str> STR_LIT
 %token <num> INT_LIT
 
+%type <str> return
+
 %type <cl>	class
 %type <cls>	classes
 %type <clssig>	class_signature
@@ -105,8 +107,14 @@ methods:
 	};
 
 method:
-	DEF IDENT '(' formal_args ')' ':'IDENT statements {
+	DEF IDENT '(' formal_args ')' return statement_block {
 	};
+
+return:
+	%empty {
+	}
+	| ':'IDENT {
+	}
 
 formal_args:
 	%empty {
